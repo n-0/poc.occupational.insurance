@@ -20,7 +20,7 @@ like so:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("n-0/pococcupationalinsurance")
+devtools::install_github("n-0/poc.occupational.insurance")
 ```
 
 ## Example
