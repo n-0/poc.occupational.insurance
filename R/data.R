@@ -1,0 +1,19 @@
+#' St. Louis Occupation data
+#'
+#' Documenting the occupation status and change a cohort of 100000 individuals in St. Louis from 1977.
+#'
+#' @format ## `occupation1977stlouis`
+#' A data frame with 60 rows for ages 16 until 75:
+#' \describe{
+#'   \item{age}{Age}
+#'   \item{total}{total individuals}
+#'   \item{active}{Occupied individuals}
+#'   \item{inactive}{Not occupied individuals}
+#'   \item{entries_into_work}{Number of inactive individuals from previous period added to current active population}
+#'   \item{voluntary_work_exits}{Number of active individuals from previous period added to current inactive population}
+#'   \item{death_active}{Number of active individuals from previous period which died.}
+#'   \item{death_inactive}{Number of inactive individuals from previous period which died.}
+#'   \item{death_total}{Total number of deaths}
+#' }
+#' @source Tables of Working Life: The Increment-Decrement Model U.S. Department of Labor November 1982 Bulletin 2135
+"occupation1977stlouis"

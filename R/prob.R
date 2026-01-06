@@ -1,28 +1,34 @@
-the <- new.env(parent = emptyenv())
-
 #' Determine a table of transition probabilities dependend on age
+#' from a increment-decrement table.
+#' @details
+#' The resulting dataframe has rows for each age `x` with the columns 
+#' * aipx - the probability of an occupied individual to become unoccupied.
+#' * adpx - the probability of an occupied individual to die
+#' * idpx - the probability of an unoccupied individual to die
+#' * idpx - the probability of an unoccupied individual to become occupied 
+#' Where the probabilities are conditional on the current state and age 
+#' and taken with respect to the next time period.
+#' @param occupation_data - A data.frame with columns such as in 
+#' the `occupation1977stlouis` data set.
 #' @export
-determine_probs = function(employment_data) {
-    aipx = employment_data$voluntary_work_exits[-1] / employment_data$active 
-    aipx = aipx[-length(aipx)] 
+determine_probs = function(occupation_data) {
+    shifted_data = utils::tail(occupation_data, -1)
+    curtailed_data = utils::head(occupation_data, -1)
 
-    adpx = employment_data$death_active[-1] / employment_data$active
-    adpx = adpx[-length(adpx)]
+    aipx = shifted_data$voluntary_work_exits / curtailed_data$active
+    adpx = shifted_data$death_active / curtailed_data$active
+    idpx = shifted_data$death_inactive / curtailed_data$inactive
+    iapx = shifted_data$entries_into_work / curtailed_data$inactive
 
-    idpx = employment_data$death_inactive[-1] / employment_data$inactive
-    idpx = idpx[-length(idpx)]
-
-    iapx = employment_data$entries_into_work[-1] / employment_data$inactive
-    iapx = iapx[-length(iapx)]
-
-    df = data.frame(aipx = aipx, adpx = adpx, idpx = idpx, iapx = iapx, age=employment_data$age[-length(aipx)])
-    row.names(df) <- employment_data$age[-length(aipx)];
-    df
+    data.frame(aipx = round(aipx, 6), adpx = round(adpx, 6), idpx = round(idpx, 6), iapx = round(iapx, 6), age=occupation_data$age[-length(occupation_data$age)])
 }
 
 
 #' Determine a transition probability matrix 
 #' for Markov Chain based calculations
+#' @param transition_probs - A table of transition probabilities as produced by [determine_probs()]
+#' @param x - If a vector then for each age in there, a transition matrix is added. 
+#' @returns A transition matrix. 
 #' @export
 transition_matrix_x = function(x, transition_probs) {
     if (length(x) > 1) {
@@ -30,7 +36,7 @@ transition_matrix_x = function(x, transition_probs) {
         return(tms)
     }
     t1probs = transition_probs[transition_probs$age == x,]
-    t1matrix = matrix(c(1 - t1probs$aipx - t1probs$adpx, 
+    t1matrix = matrix(round(c(1 - t1probs$aipx - t1probs$adpx, 
                       t1probs$iapx,
                       0,
                       t1probs$aipx,
@@ -38,33 +44,36 @@ transition_matrix_x = function(x, transition_probs) {
                       0,
                       t1probs$adpx,
                       t1probs$idpx,
-                      1), nrow = 3, ncol = 3)
+                      1), 6), nrow = 3, ncol = 3)
     data.frame(age = x, tmatrix = I(list(t1matrix)))
 }
 
-the$all_transition_matrices = NULL
-
-#' For efficient caching, fix all one step transition matrices.
+#' Determine transition probability matrices
+#' from starting age x until t
+#' @param transition_probs - A table of transition probabilities as produced by [determine_probs()].
+#' @param opt_all_tms - Optional one Period Transition matrices for all ages such as by [transition_matrix_x()].
+#' @param x - Starting age
+#' @param t - If a vector then the result has a row with a transition matrix for each entry.
+#' @returns data.frame of transition matrices and corresponding initial age and time since then.
 #' @export
-set_all_transition_matrices = function(x, transition_probs) {
-    the$all_transition_matrices = transition_matrix_x(transition_probs$age, transition_probs)
-}
-
-#' Obtain the transition matrix for an individual aged x
-#' after t years.
-#' @export
-transition_matrix_x_t = function(x, t, transition_probs) {
-    if (the$all_transition_matrices == NULL) { 
-        set_all_transition_matrices(x, transition_probs)
+transition_matrix_x_t = function(x, t, transition_probs, opt_all_tms = NULL) {
+    last_row = utils::tail(transition_probs, 1)
+    if (last_row$age < utils::tail(x + t, 1)) {
+        stop(sprintf("Out of range (%f, %f) maximum age for available probabilities", transition_probs[1]$age, last_row$age))
     }
+    all_tms = if(is.null(opt_all_tms)) {
+        transition_matrix_x(transition_probs$age, transition_probs)
+    } else { opt_all_tms }
     if (length(t) > 1) {
-        tms = as.data.frame(do.call(rbind, lapply(t, function(t) transition_matrix_x_t(x, t, transition_probs))))
+        tms = as.data.frame(do.call(rbind, lapply(t, function(t) transition_matrix_x_t(x, t, transition_probs, all_tms))))
         return(tms)
     }
     if (t == 0) { 
         tms = data.frame(x = x, t = 0, m = I(list(diag(rep(1, 3)))))
         return(tms) 
     }
-    age_range = the$all_transition_matrices_x[the$all_transition_matrices_x$age >= x & the$all_transition_matrices_x$age <= x + t,]
-    data.frame(x = x, t = t, m = I(list(Reduce(`%*%`, age_range$tmatrix))))
+    age_range = all_tms[all_tms$age >= x & all_tms$age < x + t,]
+    final_tms = (function(acc, nxt) round(acc %*% nxt, 6)) |>
+    Reduce(age_range$tmatrix) |> list()
+    data.frame(x = x, t = t, m = I(final_tms))
 }

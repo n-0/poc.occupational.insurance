@@ -2,12 +2,32 @@
 % Please edit documentation in R/prob.R
 \name{transition_matrix_x_t}
 \alias{transition_matrix_x_t}
-\title{Obtain the transition matrix for an individual aged x
-after t years.}
+\title{Determine transition probability matrices
+from starting age x until t}
 \usage{
-transition_matrix_x_t(x, t, transition_probs)
+transition_matrix_x_t(x, t, transition_probs, opt_all_tms = NULL)
+}
+\arguments{
+\item{x}{\itemize{
+\item Starting age
+}}
+
+\item{t}{\itemize{
+\item If a vector then the result has a row with a transition matrix for each entry.
+}}
+
+\item{transition_probs}{\itemize{
+\item A table of transition probabilities as produced by \code{\link[=determine_probs]{determine_probs()}}.
+}}
+
+\item{opt_all_tms}{\itemize{
+\item Optional one Period Transition matrices for all ages such as by \code{\link[=transition_matrix_x]{transition_matrix_x()}}.
+}}
+}
+\value{
+data.frame of transition matrices and corresponding initial age and time since then.
 }
 \description{
-Obtain the transition matrix for an individual aged x
-after t years.
+Determine transition probability matrices
+from starting age x until t
 }

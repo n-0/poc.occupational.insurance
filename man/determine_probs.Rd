@@ -2,10 +2,29 @@
 % Please edit documentation in R/prob.R
 \name{determine_probs}
 \alias{determine_probs}
-\title{Determine a table of transition probabilities dependend on age}
+\title{Determine a table of transition probabilities dependend on age
+from a increment-decrement table.}
 \usage{
-determine_probs(employment_data)
+determine_probs(occupation_data)
+}
+\arguments{
+\item{occupation_data}{\itemize{
+\item A data.frame with columns such as in
+the \code{occupation1977stlouis} data set.
+}}
 }
 \description{
 Determine a table of transition probabilities dependend on age
+from a increment-decrement table.
+}
+\details{
+The resulting dataframe has rows for each age \code{x} with the columns
+\itemize{
+\item aipx - the probability of an occupied individual to become unoccupied.
+\item adpx - the probability of an occupied individual to die
+\item idpx - the probability of an unoccupied individual to die
+\item idpx - the probability of an unoccupied individual to become occupied
+Where the probabilities are conditional on the current state and age
+and taken with respect to the next time period.
+}
 }

@@ -7,6 +7,18 @@ for Markov Chain based calculations}
 \usage{
 transition_matrix_x(x, transition_probs)
 }
+\arguments{
+\item{x}{\itemize{
+\item If a vector then for each age in there, a transition matrix is added.
+}}
+
+\item{transition_probs}{\itemize{
+\item A table of transition probabilities as produced by \code{\link[=determine_probs]{determine_probs()}}
+}}
+}
+\value{
+A transition matrix.
+}
 \description{
 Determine a transition probability matrix
 for Markov Chain based calculations
