@@ -60,3 +60,4 @@ example_of_reserve_plot = function() {
 }
 ```
 
+For a more in-depth tutorial check out the associated vignette via, `vignette(pococcupationalinsurance)`.

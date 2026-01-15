@@ -52,3 +52,6 @@ example_of_reserve_plot = function() {
     active_reserve
 }
 ```
+
+For a more in-depth tutorial check out the associated vignette via,
+`vignette(pococcupationalinsurance)`.
