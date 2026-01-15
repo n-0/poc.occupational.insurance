@@ -5,14 +5,14 @@
 #' @format ## `occupation1977stlouis`
 #' A data frame with 60 rows for ages 16 until 75:
 #' \describe{
-#'   \item{age}{Age}
+#'   \item{age}{Age x}
 #'   \item{total}{total individuals}
-#'   \item{active}{Occupied individuals}
+#'   \item{active}{Occupied individuals at age x}
 #'   \item{inactive}{Not occupied individuals}
-#'   \item{entries_into_work}{Number of inactive individuals from previous period added to current active population}
-#'   \item{voluntary_work_exits}{Number of active individuals from previous period added to current inactive population}
-#'   \item{death_active}{Number of active individuals from previous period which died.}
-#'   \item{death_inactive}{Number of inactive individuals from previous period which died.}
+#'   \item{inactive_to_active}{Number of inactive individuals added to current active population during x,x+1}
+#'   \item{active_to_inactive}{Number of active individuals added to current inactive population during x,x+1}
+#'   \item{active_to_death}{Number of active individuals which died during x,x+1.}
+#'   \item{inactive_to_death}{Number of inactive individuals which died during x,x+1.}
 #'   \item{death_total}{Total number of deaths}
 #' }
 #' @source Tables of Working Life: The Increment-Decrement Model U.S. Department of Labor November 1982 Bulletin 2135

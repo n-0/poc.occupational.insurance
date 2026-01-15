@@ -12,15 +12,12 @@
 #' the `occupation1977stlouis` data set.
 #' @export
 determine_probs = function(occupation_data) {
-    shifted_data = utils::tail(occupation_data, -1)
-    curtailed_data = utils::head(occupation_data, -1)
+    aipx = occupation_data$active_to_inactive / occupation_data$active
+    adpx = occupation_data$active_to_death / occupation_data$active
+    idpx = occupation_data$inactive_to_death / occupation_data$inactive
+    iapx = occupation_data$inactive_to_active / occupation_data$inactive
 
-    aipx = shifted_data$voluntary_work_exits / curtailed_data$active
-    adpx = shifted_data$death_active / curtailed_data$active
-    idpx = shifted_data$death_inactive / curtailed_data$inactive
-    iapx = shifted_data$entries_into_work / curtailed_data$inactive
-
-    data.frame(aipx = round(aipx, 6), adpx = round(adpx, 6), idpx = round(idpx, 6), iapx = round(iapx, 6), age=occupation_data$age[-length(occupation_data$age)])
+    data.frame(aipx = round(aipx, 6), adpx = round(adpx, 6), idpx = round(idpx, 6), iapx = round(iapx, 6), age=occupation_data$age)
 }
 
 
@@ -36,22 +33,17 @@ transition_matrix_x = function(x, transition_probs) {
         return(tms)
     }
     t1probs = transition_probs[transition_probs$age == x,]
-    t1matrix = matrix(round(c(1 - t1probs$aipx - t1probs$adpx, 
-                      t1probs$iapx,
-                      0,
-                      t1probs$aipx,
-                      1 - t1probs$iapx - t1probs$idpx,
-                      0,
-                      t1probs$adpx,
-                      t1probs$idpx,
-                      1), 6), nrow = 3, ncol = 3)
+    t1matrix = c(1 - t1probs$aipx - t1probs$adpx, t1probs$aipx, t1probs$adpx,
+                t1probs$iapx, 1 - t1probs$iapx - t1probs$idpx, t1probs$idpx,
+                 0, 0, 1
+              ) |> round(6) |> matrix(byrow=TRUE, nrow = 3, ncol = 3)
     data.frame(age = x, tmatrix = I(list(t1matrix)))
 }
 
 #' Determine transition probability matrices
 #' from starting age x until t
 #' @param transition_probs - A table of transition probabilities as produced by [determine_probs()].
-#' @param opt_all_tms - Optional one Period Transition matrices for all ages such as by [transition_matrix_x()].
+#' @param opt_all_tms - Optional one period transition matrices for all ages such as by [transition_matrix_x()].
 #' @param x - Starting age
 #' @param t - If a vector then the result has a row with a transition matrix for each entry.
 #' @returns data.frame of transition matrices and corresponding initial age and time since then.

@@ -21,7 +21,7 @@ transition_matrix_x_t(x, t, transition_probs, opt_all_tms = NULL)
 }}
 
 \item{opt_all_tms}{\itemize{
-\item Optional one Period Transition matrices for all ages such as by \code{\link[=transition_matrix_x]{transition_matrix_x()}}.
+\item Optional one period transition matrices for all ages such as by \code{\link[=transition_matrix_x]{transition_matrix_x()}}.
 }}
 }
 \value{

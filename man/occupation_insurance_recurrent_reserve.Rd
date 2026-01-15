@@ -46,7 +46,7 @@ occupation_insurance_recurrent_reserve(
 }}
 
 \item{opt_premium_duration}{\itemize{
-\item The no. of times the premium is paid, default is the policy duration.
+\item The no. of periods the premium is paid, default is the policy duration.
 }}
 }
 \value{

@@ -129,8 +129,6 @@ test_that("recurrent premium fits probabilities, a.s. stays active", {
   # pays only at the start and afterwards never again
   # as the insuree becomes unemployed.
   expect_equal(premium, sum(v^(1:2)*rep(benefit, 2)))
-
-
 })
 
 test_that("recurrent premium fits probabilities", {

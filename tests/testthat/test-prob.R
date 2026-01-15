@@ -4,17 +4,17 @@ test_that("probabilities are extracted from table", {
     age = age_column,
     total = c(100000, 100000, 99999),
     active = c(100000, 50000, 50000),
-    inactive = c(0, 50000, 49999),
-    entries_into_work = c(0, 0, 0),
-    voluntary_work_exits = c(0, 50000, 0),
-    death_active = c(0, 0, 0),
-    death_inactive = c(0, 0, 1),
-    death_total = c(0, 0, 1)
+    inactive = c(50000, 49999, 49999),
+    inactive_to_active = c(0, 0, 0),
+    active_to_inactive = c(50000, 0, 0),
+    active_to_death = c(0, 0, 0),
+    inactive_to_death = c(0, 1, 0),
+    death_total = c(0, 1, 1)
   )
 
   probs = determine_probs(some_data)
-  expect_equal(length(probs$age), 2) 
-  expect_equal(probs$age, head(age_column, -1))
+  expect_equal(length(probs$age), 3) 
+  expect_equal(probs$age, age_column)
   expect_equal(probs$aipx[1], 0.5) 
   expect_equal(probs$idpx[2], 1/50000) 
   expect_equal(probs$iapx[2], 0) 
@@ -47,7 +47,6 @@ test_that("transition matrix is inferred from probabilities", {
 
 
 test_that("transition matrix from selected age after t years", {
-  skip()
   age_column = c(30, 31, 32)
   some_data = data.frame(
     age = age_column,

@@ -59,7 +59,7 @@ occupation_insurance_recurrent_premium = function(
 #' for a policy as given by the parameters.
 #' @param t - Time at which the reserve is considered.
 #' @inheritParams occupation_insurance_recurrent_premium
-#' @param opt_premium_duration - The no. of times the premium is paid, default is the policy duration.
+#' @param opt_premium_duration - The no. of periods the premium is paid, default is the policy duration.
 #' @returns reserve at time `t`.
 #' @export
 occupation_insurance_recurrent_reserve = function(
